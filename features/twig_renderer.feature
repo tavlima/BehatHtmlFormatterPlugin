@@ -46,7 +46,7 @@
         }
       """
 
- Scenario: Multiple Suites with multiple results
+  Scenario: Multiple Suites with multiple results
     Given a file named "features/suite1/suite_failing_with_passing.feature" with:
       """
       Feature: Suite failing with passing scenarios
@@ -105,3 +105,40 @@
       2 steps failed of 6
       """
 
+  Scenario: Multiple Suites with stop on failure
+    Given a file named "features/suite1/suite_passing.feature" with:
+    """
+    Feature: Suite passing
+      Scenario: Passing scenario
+        Then I give a passing step
+    """
+    Given a file named "features/suite2/suite_failing_with_passing.feature" with:
+    """
+    Feature: Suite failing with passing scenarios
+      Scenario: Passing scenario
+        Then I give a passing step
+      Scenario: One Failing step
+        Then I give a failing step
+      Scenario: One Pending step
+        Then I give a pending step
+      Scenario: Passing and Pending steps
+        Then I give a passing step
+        Then I give a pending step
+      Scenario: Passing and Failing steps
+        Then I give a passing step
+        Then I give a failing step
+    """
+    When I run "behat --no-colors --stop-on-failure"
+    Then report file should exists
+    And report file should contain:
+    """
+    0 features failed of 1
+    """
+    And report file should contain:
+    """
+    1 scenarios failed of 3
+    """
+    And report file should contain:
+    """
+    1 steps failed of 3
+    """

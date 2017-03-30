@@ -9,10 +9,12 @@ use Behat\Behat\EventDispatcher\Event\AfterStepTested;
 use Behat\Behat\EventDispatcher\Event\BeforeFeatureTested;
 use Behat\Behat\EventDispatcher\Event\BeforeOutlineTested;
 use Behat\Behat\EventDispatcher\Event\BeforeScenarioTested;
+use Behat\Behat\EventDispatcher\Event\BeforeStepTested;
 use Behat\Behat\Tester\Result\ExecutedStepResult;
 use Behat\Testwork\Counter\Memory;
 use Behat\Testwork\Counter\Timer;
 use Behat\Testwork\EventDispatcher\Event\AfterExerciseCompleted;
+use Behat\Testwork\EventDispatcher\Event\AfterSuiteAborted;
 use Behat\Testwork\EventDispatcher\Event\AfterSuiteTested;
 use Behat\Testwork\EventDispatcher\Event\BeforeExerciseCompleted;
 use Behat\Testwork\EventDispatcher\Event\BeforeSuiteTested;
@@ -369,7 +371,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param BeforeExerciseCompleted $event
      */
-    public function onBeforeExercise(BeforeExerciseCompleted $event)
+    public function onBeforeExercise($event)
     {
         $this->timer->start();
 
@@ -380,7 +382,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param AfterExerciseCompleted $event
      */
-    public function onAfterExercise(AfterExerciseCompleted $event)
+    public function onAfterExercise($event)
     {
 
         $this->timer->stop();
@@ -392,7 +394,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param BeforeSuiteTested $event
      */
-    public function onBeforeSuiteTested(BeforeSuiteTested $event)
+    public function onBeforeSuiteTested($event)
     {
         $this->currentSuite = new Suite();
         $this->currentSuite->setName($event->getSuite()->getName());
@@ -402,9 +404,9 @@ class BehatHTMLFormatter implements Formatter {
     }
 
     /**
-     * @param AfterSuiteTested $event
+     * @param AfterSuiteTested|AfterSuiteAborted $event
      */
-    public function onAfterSuiteTested(AfterSuiteTested $event)
+    public function onAfterSuiteTested($event)
     {
         $this->suites[] = $this->currentSuite;
 
@@ -415,7 +417,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param BeforeFeatureTested $event
      */
-    public function onBeforeFeatureTested(BeforeFeatureTested $event)
+    public function onBeforeFeatureTested($event)
     {
         $feature = new Feature();
         $feature->setId($this->featureCounter);
@@ -434,7 +436,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param AfterFeatureTested $event
      */
-    public function onAfterFeatureTested(AfterFeatureTested $event)
+    public function onAfterFeatureTested($event)
     {
         $this->currentSuite->addFeature($this->currentFeature);
         if($this->currentFeature->allPassed()) {
@@ -450,7 +452,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param BeforeScenarioTested $event
      */
-    public function onBeforeScenarioTested(BeforeScenarioTested $event)
+    public function onBeforeScenarioTested($event)
     {
         $scenario = new Scenario();
         $scenario->setName($event->getScenario()->getTitle());
@@ -466,7 +468,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param AfterScenarioTested $event
      */
-    public function onAfterScenarioTested(AfterScenarioTested $event)
+    public function onAfterScenarioTested($event)
     {
         $scenarioPassed = $event->getTestResult()->isPassed();
 
@@ -489,7 +491,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param BeforeOutlineTested $event
      */
-    public function onBeforeOutlineTested(BeforeOutlineTested $event)
+    public function onBeforeOutlineTested($event)
     {
         $scenario = new Scenario();
         $scenario->setName($event->getOutline()->getTitle());
@@ -504,7 +506,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param AfterOutlineTested $event
      */
-    public function onAfterOutlineTested(AfterOutlineTested $event)
+    public function onAfterOutlineTested($event)
     {
         $scenarioPassed = $event->getTestResult()->isPassed();
 
@@ -527,7 +529,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param BeforeStepTested $event
      */
-    public function onBeforeStepTested(BeforeStepTested $event)
+    public function onBeforeStepTested($event)
     {
         $print = $this->renderer->renderBeforeStep($this);
         $this->printer->writeln($print);
@@ -536,7 +538,7 @@ class BehatHTMLFormatter implements Formatter {
     /**
      * @param AfterStepTested $event
      */
-    public function onAfterStepTested(AfterStepTested $event)
+    public function onAfterStepTested($event)
     {
         $result = $event->getTestResult();
 

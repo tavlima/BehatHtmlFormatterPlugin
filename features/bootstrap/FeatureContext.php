@@ -73,8 +73,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function prepareTestFolders()
     {
-        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat' . DIRECTORY_SEPARATOR .
-            md5(microtime() * rand(0, 10000));
+        $number = microtime(true) * rand(0, 10000);
+
+        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat' . DIRECTORY_SEPARATOR . md5($number);
 
         mkdir($dir . '/features/bootstrap/i18n', 0777, true);
         mkdir($dir . '/junit');
